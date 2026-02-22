@@ -3,7 +3,6 @@ import { addCounter, deleteCounter, moveCounter, useCounters } from '~/lib/count
 
 const counters = useCounters()
 const editMode = ref(false)
-const editing = ref(0)
 </script>
 
 <template>
