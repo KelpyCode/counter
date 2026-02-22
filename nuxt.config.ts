@@ -2,7 +2,10 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui'
+    '@vueuse/nuxt',
+    '@nuxt/ui',
+    '@vite-pwa/nuxt',
+    '@vueuse/motion/nuxt'
   ],
 
   devtools: {
@@ -24,5 +27,8 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  pwa: {
   }
 })

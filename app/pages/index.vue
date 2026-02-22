@@ -1,76 +1,119 @@
+<script setup lang="ts">
+import { addCounter, deleteCounter, moveCounter, useCounters } from '~/lib/counter'
+
+const counters = useCounters()
+const editMode = ref(false)
+const editing = ref(0)
+</script>
+
 <template>
-  <div>
-    <UPageHero
-      title="Nuxt Starter Template"
-      description="A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours."
-      :links="[{
-        label: 'Get started',
-        to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-        target: '_blank',
-        trailingIcon: 'i-lucide-arrow-right',
-        size: 'xl'
-      }, {
-        label: 'Use this template',
-        to: 'https://github.com/nuxt-ui-templates/starter',
-        target: '_blank',
-        icon: 'i-simple-icons-github',
-        size: 'xl',
-        color: 'neutral',
-        variant: 'subtle'
-      }]"
-    />
+  <UContainer class="mt-4 max-w-[500px] mx-auto">
+    <div class="flex flex-col gap-4">
+      <UCard
+        v-for="counter in counters"
+        :key="counter.id"
+      >
+        <div class="flex flex-col items-center gap-4">
+          <template v-if="editMode">
+            <div>
+              <UInput
+                v-model="counter.name"
+                placeholder="Counter Name"
+                size="xl"
+              />
+            </div>
+            <div>
+              <UInputNumber
+                v-model="counter.value"
+                placeholder="Counter Value"
+                size="xl"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div
+              class="text-3xl"
+            >
+              {{ counter.name }}
+            </div>
+          </template>
 
-    <UPageSection
-      id="features"
-      title="Everything you need to build modern Nuxt apps"
-      description="Start with a solid foundation. This template includes all the essentials for building production-ready applications with Nuxt UI's powerful component system."
-      :features="[{
-        icon: 'i-lucide-rocket',
-        title: 'Production-ready from day one',
-        description: 'Pre-configured with TypeScript, ESLint, Tailwind CSS, and all the best practices. Focus on building features, not setting up tooling.'
-      }, {
-        icon: 'i-lucide-palette',
-        title: 'Beautiful by default',
-        description: 'Leveraging Nuxt UI\'s design system with automatic dark mode, consistent spacing, and polished components that look great out of the box.'
-      }, {
-        icon: 'i-lucide-zap',
-        title: 'Lightning fast',
-        description: 'Optimized for performance with SSR/SSG support, automatic code splitting, and edge-ready deployment. Your users will love the speed.'
-      }, {
-        icon: 'i-lucide-blocks',
-        title: '100+ components included',
-        description: 'Access Nuxt UI\'s comprehensive component library. From forms to navigation, everything is accessible, responsive, and customizable.'
-      }, {
-        icon: 'i-lucide-code-2',
-        title: 'Developer experience first',
-        description: 'Auto-imports, hot module replacement, and TypeScript support. Write less boilerplate and ship more features.'
-      }, {
-        icon: 'i-lucide-shield-check',
-        title: 'Built for scale',
-        description: 'Enterprise-ready architecture with proper error handling, SEO optimization, and security best practices built-in.'
-      }]"
-    />
+          <div
 
-    <UPageSection>
-      <UPageCTA
-        title="Ready to build your next Nuxt app?"
-        description="Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today."
-        variant="subtle"
-        :links="[{
-          label: 'Start building',
-          to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-          target: '_blank',
-          trailingIcon: 'i-lucide-arrow-right',
-          color: 'neutral'
-        }, {
-          label: 'View on GitHub',
-          to: 'https://github.com/nuxt-ui-templates/starter',
-          target: '_blank',
-          icon: 'i-simple-icons-github',
-          color: 'neutral',
-          variant: 'outline'
-        }]"
+            class="flex gap-2 w-full"
+          >
+            <div class="flex-1 flex flex-row items-center justify-center">
+              <UButton
+                v-if="false"
+                color="secondary"
+                icon="i-lucide-minus"
+                size="xl"
+                @click="counter.value--"
+              />
+              <UButton
+                v-if="!editMode"
+                color="info"
+                size="xl"
+                class="py-8 active:scale-95 transition-transform duration-150"
+                block
+                @click="counter.value++"
+              >
+                <div class="text-3xl">
+                  {{ counter.value }}
+                </div>
+              </UButton>
+            </div>
+            <div
+              v-if="editMode"
+              class="flex flex-row gap-4 w-full"
+            >
+              <UButton
+                color="secondary"
+                icon="i-lucide-arrow-up"
+                size="xl"
+                @click="moveCounter(counter.id, 'up')"
+              />
+              <UButton
+                color="secondary"
+                icon="i-lucide-arrow-down"
+                size="xl"
+                @click="moveCounter(counter.id, 'down')"
+              />
+              <div class="flex-1" />
+              <UButton
+                color="error"
+                icon="i-lucide-trash-2"
+                size="xl"
+                @click="deleteCounter(counter.id)"
+              />
+            </div>
+
+            <!-- <UButton
+              @click="deleteCounter(counter.id)"
+            >
+              Delete
+            </UButton> -->
+          </div>
+        </div>
+      </UCard>
+    </div>
+
+    <div class="flex flex-row gap-4">
+      <UButton
+        color="primary"
+        class="mt-4 flex-0"
+        icon="i-lucide-cog"
+        @click="editMode = !editMode"
       />
-    </UPageSection>
-  </div>
+
+      <UButton
+        v-if="editMode"
+        color="primary"
+        class="mt-4 w-full"
+        icon="i-lucide-plus"
+        block
+        @click="addCounter()"
+      />
+    </div>
+  </UContainer>
 </template>
