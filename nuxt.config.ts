@@ -8,10 +8,15 @@ export default defineNuxtConfig({
     '@vueuse/motion/nuxt'
   ],
 
+  ssr: false,
   devtools: {
     enabled: true
   },
-
+  app: {
+    // Important: trailing slash usually helps avoid 404 on refresh
+    baseURL: '/counter/' // ← change this!
+    // buildAssetsDir: 'assets',     // optional — avoid starting with _
+  },
   css: ['~/assets/css/main.css'],
 
   routeRules: {
@@ -19,6 +24,9 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-15',
+  nitro: {
+    preset: 'github-pages'
+  },
 
   eslint: {
     config: {
@@ -28,7 +36,6 @@ export default defineNuxtConfig({
       }
     }
   },
-
   pwa: {
   }
 })
