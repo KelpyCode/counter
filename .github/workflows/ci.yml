@@ -9,26 +9,29 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [22]
+        # You can remove the node matrix if you don't need it — Bun doesn't require setup-node
+        # But keeping it for now in case some tools still expect Node
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4   # v6 exists but v4 is stable and widely used
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install node
-        uses: actions/setup-node@v6
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: ${{ matrix.node }}
-          cache: pnpm
+          bun-version: latest        # or pin it, e.g. "1.1" or exact like "1.1.30" to match local
+
+      # Optional: If some parts of your project still need Node (rare with Bun), keep this
+      # - name: Install Node (fallback)
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile   # --frozen-lockfile = strict / reproducible like pnpm ci
 
       - name: Lint
-        run: pnpm run lint
+        run: bun run lint
 
       - name: Typecheck
-        run: pnpm run typecheck
+        run: bun run typecheck
