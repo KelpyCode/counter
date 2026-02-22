@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]           # ← or master, your default branch
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -22,23 +22,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2           # ← official Bun action (replaces setup-node)
+        uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest               # or pin e.g. "1.2.x" if you prefer
+          bun-version: latest  # or "1.x" or exact like "1.1.30" to match your local
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile   # ← Bun's equivalent of npm ci / pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build & Generate
-        run: bun run generate                # or bun run build if your scripts use "build"
+        run: bun run generate  # or bun run build — whatever your script is
         env:
-          # Optional but recommended — helps set baseURL dynamically if not hardcoded
           NUXT_APP_BASE_URL: ${{ github.event.repository.name && format('/{0}/', github.event.repository.name) || '/' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .output/public               # ← this is where static files land after generate/build
+          path: .output/public
 
   deploy:
     needs: build
