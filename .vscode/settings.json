@@ -1,5 +1,7 @@
 {
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
-    "editor.formatOnType": false
+    "editor.formatOnType": false,
+    "iconify.annotations": true,
+    "iconify.inplace": false
 }

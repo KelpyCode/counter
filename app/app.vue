@@ -1,4 +1,6 @@
 <script setup>
+import { provideState } from './lib/state'
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -28,13 +30,21 @@ useHead({
     content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
   }
 })
+
+const state = provideState()
 </script>
 
 <template>
   <UApp>
     <div class="flex flex-row w-full">
       <div class="flex-1" />
-      <div>
+      <div class="mr-2">
+        <UButton
+          :color="state.editMode ? 'primary' : 'neutral'"
+          class="mt-4 flex-0"
+          icon="i-lucide-cog"
+          @click="state.editMode = !state.editMode"
+        />
         <UColorModeButton />
       </div>
     </div>
