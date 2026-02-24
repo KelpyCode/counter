@@ -13,6 +13,8 @@ const counters = computed(() => category.value?.counters || [])
 const toast = useToast()
 const editMode = ref(false)
 const voiceActive = ref(false)
+// Map of counterId -> trigger count to signal CounterDisplay to play sound
+const triggerSounds = reactive<Record<number, number>>({})
 
 watch(category, (c) => {
   console.log('apply theme', c)
@@ -51,6 +53,8 @@ watchDebounced(result, (text) => {
         if (phraseWords.every(word => saidWords.includes(word))) {
           console.log(`Incrementing counter ${counter.name} by ${command.add} because of phrase match with command phrase "${command.phrase}"`)
           counter.value += command.add
+          // trigger sound on the matched counter
+          triggerSounds[counter.id] = (triggerSounds[counter.id] || 0) + 1
           found.push(counter.name)
         }
       }
@@ -66,7 +70,7 @@ watchDebounced(result, (text) => {
   }
 }, { debounce: 1000 })
 
-const shouldBeListening = computed(() => voiceActive) // Now tied to voiceActive
+const shouldBeListening = computed(() => voiceActive.value) // Now tied to voiceActive
 
 // Auto-restart logic, only when voiceActive is true
 watch(isListening, (nowListening) => {
@@ -94,24 +98,6 @@ watch(error, (e) => {
   }
 })
 
-watch(() => voiceActive, (active) => {
-  if (!isSupported.value) return
-  if (active) {
-    start()
-  } else {
-    stop()
-  }
-})
-
-watch(() => voiceActive, (active) => {
-  if (!isSupported.value) return
-  if (active && !isListening.value) { // Ensure recognition is not already active
-    start()
-  } else {
-    stop()
-  }
-})
-
 function toggleVoice() {
   // Check if Speech Recognition is supported
   if (!isSupported.value) {
@@ -126,6 +112,26 @@ function toggleVoice() {
   }
 
   voiceActive.value = !voiceActive.value
+
+  if (voiceActive.value) {
+    toast.add({
+      title: 'Voice control enabled',
+      description: 'Listening for commands...',
+      icon: 'i-lucide-mic',
+      color: 'success',
+      duration: 3000
+    })
+    start()
+  } else {
+    toast.add({
+      title: 'Voice control disabled',
+      description: 'Stopped listening.',
+      icon: 'i-lucide-mic-off',
+      color: 'error',
+      duration: 3000
+    })
+    stop()
+  }
 }
 
 // Start on mount (or after user gesture)
@@ -201,6 +207,8 @@ function toggleVoice() {
             v-else
             :counter="counter"
             :category-id="categoryId"
+            :voice-active="voiceActive"
+            :trigger-sound="triggerSounds[counter.id] || 0"
           />
         </div>
       </div>
