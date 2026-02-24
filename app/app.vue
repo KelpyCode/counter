@@ -35,6 +35,8 @@ provideState()
 </script>
 
 <template>
+  <NuxtPwaAssets />
+
   <UApp>
     <div class="flex flex-row w-full">
       <div class="flex-1" />

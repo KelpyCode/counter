@@ -54,7 +54,6 @@ export default defineNuxtConfig({
       name: 'Counter',
       short_name: 'Counter',
       display: 'standalone',
-      display_override: ['window-controls-overlay', 'standalone', 'browser'],
       orientation: 'portrait',
       theme_color: '#22223b',
       background_color: '#22223b',
