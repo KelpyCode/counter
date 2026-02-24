@@ -13,6 +13,7 @@ const categoryId = useCategoryId()
 const category = useCategory(categoryId)
 const counters = computed(() => category.value?.counters || [])
 const toast = useToast()
+const editMode = ref(false)
 
 watch(category, (c) => {
   console.log('apply theme', c)
@@ -127,7 +128,7 @@ watch(() => state.voiceActive, (active) => {
         value-key="value"
         label-key="label"
         class="w-full flex-1"
-        variant="ghost"
+        variant="soft"
         icon="i-lucide-list"
         size="xl"
       >
@@ -135,6 +136,8 @@ watch(() => state.voiceActive, (active) => {
           <UButton
             icon="i-lucide-cog"
             block
+            variant="soft"
+            class="rounded-none py-2"
             color="neutral"
             to="/categories"
           >
@@ -146,20 +149,22 @@ watch(() => state.voiceActive, (active) => {
         :color="state.voiceActive ? 'success' : 'error'"
         class=" flex-0"
         icon="i-lucide-mic"
+        variant="soft"
         @click="state.voiceActive = !state.voiceActive"
       />
       <UButton
-        :color="state.editMode ? 'primary' : 'neutral'"
+        :color="editMode ? 'success' : 'error'"
         class=" flex-0"
+        variant="soft"
         icon="i-lucide-cog"
-        @click="state.editMode = !state.editMode"
+        @click="editMode = !editMode"
       />
     </div>
     <div
       v-auto-animate
       class="flex flex-col gap-4"
     >
-      <div v-if="counters.length <= 0 && !state.editMode">
+      <div v-if="counters.length <= 0 && !editMode">
         <UEmpty title="No content yet, go into the edit mode at the top right to add new counters" />
       </div>
       <div
@@ -171,7 +176,7 @@ watch(() => state.voiceActive, (active) => {
           :key="counter.id"
         >
           <CounterEdit
-            v-if="state.editMode"
+            v-if="editMode"
             :counter="counter"
             :category-id="categoryId"
           />
@@ -186,8 +191,8 @@ watch(() => state.voiceActive, (active) => {
 
     <div class="flex flex-row gap-2 mt-4">
       <UButton
-        v-if="state.editMode"
-        color="success"
+        v-if="editMode"
+        color="primary"
         icon="i-lucide-plus"
         block
         size="xl"
@@ -196,12 +201,12 @@ watch(() => state.voiceActive, (active) => {
         Add counter
       </UButton>
       <UButton
-        v-if="state.editMode"
-        color="neutral"
+        v-if="editMode"
+        color="secondary"
         icon="i-lucide-check"
         block
         size="xl"
-        @click="state.editMode = false"
+        @click="editMode = false"
       >
         Finish
       </UButton>

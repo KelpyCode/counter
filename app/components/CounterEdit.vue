@@ -8,6 +8,22 @@ interface Props {
 
 const props = defineProps<Props>()
 const counter2 = computed(() => props.counter!)
+
+const confirmDelete = ref(false)
+const confirmDeleteTimeout = ref<number | null>(null)
+function deleteWithConfirmation() {
+  if (confirmDelete.value) {
+    deleteCounter(props.categoryId, counter2.value.id)
+  } else {
+    confirmDelete.value = true
+    if (confirmDeleteTimeout.value) {
+      clearTimeout(confirmDeleteTimeout.value)
+    }
+    confirmDeleteTimeout.value = window.setTimeout(() => {
+      confirmDelete.value = false
+    }, 3000)
+  }
+}
 </script>
 
 <template>
@@ -23,11 +39,13 @@ const counter2 = computed(() => props.counter!)
           color="secondary"
           icon="i-lucide-arrow-up"
           size="xl"
+          variant="soft"
           @click="moveCounter(categoryId, counter2.id, 'up')"
         />
         <UButton
           color="secondary"
           icon="i-lucide-arrow-down"
+          variant="soft"
           size="xl"
           @click="moveCounter(categoryId, counter2.id, 'down')"
         />
@@ -35,9 +53,12 @@ const counter2 = computed(() => props.counter!)
         <UButton
           color="error"
           icon="i-lucide-trash-2"
-          size="xl"
-          @click="deleteCounter(categoryId, counter2.id)"
-        />
+          :variant="confirmDelete ? 'solid' : 'soft'"
+          :size="confirmDelete ? 'sm' : 'xl'"
+          @click="deleteWithConfirmation"
+        >
+          <span v-if="confirmDelete">Really?</span>
+        </UButton>
       </div>
 
       <div class="w-full">
