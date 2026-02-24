@@ -80,7 +80,7 @@ watch(isListening, (nowListening) => {
 watch(error, (e) => {
   if (!e) return
 
-  const err = e as SpeechRecognitionErrorEvent
+  const err = e as unknown as { error: string, message: string }
 
   const recoverableErrors = ['no-speech', 'aborted', 'network']
 

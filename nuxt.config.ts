@@ -20,7 +20,8 @@ export default defineNuxtConfig({
     head: {
       meta: [
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'mobile-web-app-capable', content: 'yes' }
       ]
     }
   },
@@ -44,6 +45,11 @@ export default defineNuxtConfig({
     }
   },
   pwa: {
+    registerType: 'autoUpdate',
+    workbox: {
+      navigateFallback: '/counter/'
+      // ... other service-worker options if needed
+    },
     manifest: {
       name: 'Counter',
       short_name: 'Counter',
@@ -52,6 +58,7 @@ export default defineNuxtConfig({
       orientation: 'portrait',
       theme_color: '#22223b',
       background_color: '#22223b',
+      scope: '/counter/',
       start_url: '/counter/',
       icons: [
         {
