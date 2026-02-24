@@ -38,5 +38,17 @@ export default defineNuxtConfig({
     }
   },
   pwa: {
+    manifest: {
+      name: 'Counter',
+      short_name: 'Counter',
+      display: 'standalone',
+      orientation: 'portrait',
+      theme_color: '#22223b',
+      background_color: '#22223b',
+      start_url: '/counter/',
+      icons: [
+
+      ]
+    }
   }
 })
