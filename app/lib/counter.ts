@@ -1,5 +1,10 @@
 import { useCategory } from './category'
 
+export interface VoiceCommand {
+  phrase: string
+  add: number
+}
+
 export interface Counter {
   id: number
   name: string
@@ -7,6 +12,11 @@ export interface Counter {
   lastChanged: number
   created: number
   showLastChanged?: boolean
+
+  voice: {
+    enabled?: boolean
+    commands: VoiceCommand[]
+  }
 }
 
 /**
@@ -28,10 +38,13 @@ export function addCounter(categoryId: number) {
     name: `Counter ${counters.length + 1}`,
     value: 0,
     lastChanged: d,
-    created: d
+    created: d,
+    voice: {
+      enabled: false,
+      commands: []
+    }
   }
   storage.value!.counters.push(newCounter)
-  storage.value = { ...storage.value! }
 }
 
 export function updateCounter(categoryId: number, id: number, value: number) {
@@ -41,7 +54,6 @@ export function updateCounter(categoryId: number, id: number, value: number) {
   if (counter) {
     counter.value = value
     counter.lastChanged = Date.now()
-    storage.value = { ...storage.value! }
   }
 }
 
@@ -49,7 +61,6 @@ export function deleteCounter(categoryId: number, id: number) {
   const storage = useCategory(categoryId)
   const counters = storage.value?.counters || []
   storage.value!.counters = counters.filter(c => c.id !== id)
-  storage.value = { ...storage.value! }
 }
 
 export function moveCounter(categoryId: number, id: number, direction: 'up' | 'down') {

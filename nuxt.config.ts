@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
-    '@vueuse/motion/nuxt'
+    '@vueuse/motion/nuxt',
+    '@formkit/auto-animate/nuxt'
   ],
 
   ssr: false,

@@ -19,6 +19,15 @@ export function migrateOldCounters() {
   }
 
   categories.value.forEach((category) => {
+    category.counters.forEach((c) => {
+      if (!c.voice) {
+        c.voice = {
+          enabled: false,
+          commands: []
+        }
+      }
+    })
+
     if (!category.theme) {
       category.theme = {
         primary: 'green',
