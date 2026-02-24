@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { deleteCounter, moveCounter, type Counter } from '~/lib/counter'
+import { soundMap } from '~/lib/sounds'
 
 interface Props {
   categoryId: number
@@ -24,6 +25,18 @@ function deleteWithConfirmation() {
     }, 3000)
   }
 }
+
+const soundRef = ref<string>('')
+
+watch(() => counter2.value.sound, (newSound) => {
+  if (newSound === '!') {
+    soundRef.value = ''
+    return
+  }
+  soundRef.value = 'sounds/' + (newSound ?? '')
+}, { immediate: true })
+
+const sound = useSound(soundRef)
 </script>
 
 <template>
@@ -77,6 +90,38 @@ function deleteWithConfirmation() {
           size="xl"
         />
       </div>
+
+      <USeparator label="Settings" />
+
+      <CCollapsible
+        label="Sound"
+        class="w-full"
+      >
+        <UFormField
+          label="Click sound"
+          class="w-full"
+        >
+          <div class="flex flex-row gap-2">
+            <USelect
+              v-model="counter2.sound"
+              :items="soundMap"
+              placeholder="Select a sound"
+              class="w-full"
+              size="xl"
+              value-key="file"
+              label-key="name"
+            />
+            <UButton
+              :disabled="counter2.sound === '!' || !counter2.sound"
+              color="primary"
+              variant="soft"
+              icon="i-lucide-play"
+              size="md"
+              @click="sound.play()"
+            />
+          </div>
+        </UFormField>
+      </CCollapsible>
       <CCollapsible
         label="Voice activation"
         class="w-full"

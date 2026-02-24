@@ -1,3 +1,4 @@
+import type { ReturnedValue } from '@vueuse/sound'
 import { useCategory } from './category'
 
 export interface VoiceCommand {
@@ -12,7 +13,7 @@ export interface Counter {
   lastChanged: number
   created: number
   showLastChanged?: boolean
-
+  sound?: string
   voice: {
     enabled?: boolean
     commands: VoiceCommand[]
@@ -39,6 +40,7 @@ export function addCounter(categoryId: number) {
     value: 0,
     lastChanged: d,
     created: d,
+    sound: 'button-press.mp3',
     voice: {
       enabled: false,
       commands: []
@@ -77,4 +79,12 @@ export function moveCounter(categoryId: number, id: number, direction: 'up' | 'd
   counters[newIndex] = temp!
   storage.value!.counters = counters
   storage.value = { ...storage.value! }
+}
+
+export function clickCounter(counter: Counter, add = 1, sound?: ReturnedValue) {
+  counter.value += add
+  counter.lastChanged = Date.now()
+  if (sound && counter.sound !== '!') { // Ignore if sound is 'None'
+    sound.play()
+  }
 }

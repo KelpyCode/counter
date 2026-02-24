@@ -20,6 +20,10 @@ export function migrateOldCounters() {
 
   categories.value.forEach((category) => {
     category.counters.forEach((c) => {
+      if (!c.sound) {
+        c.sound = ''
+      }
+
       if (!c.voice) {
         c.voice = {
           enabled: false,

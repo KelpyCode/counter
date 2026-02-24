@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { migrateOldCounters, useCategories, useCategory, useCategoryId } from '~/lib/category'
 import { addCounter } from '~/lib/counter'
-import { injectState } from '~/lib/state'
 import { applyTheme } from '~/lib/theming'
 
 migrateOldCounters()
 const categories = useCategories()
 const categoryItems = computed(() => categories.value.map(c => ({ label: c.name, value: c.id })))
-const state = injectState()
 const categoryId = useCategoryId()
 
 const category = useCategory(categoryId)
 const counters = computed(() => category.value?.counters || [])
 const toast = useToast()
 const editMode = ref(false)
+const voiceActive = ref(false)
 
 watch(category, (c) => {
   console.log('apply theme', c)
@@ -41,7 +40,7 @@ watch(result, (text) => {
 watchDebounced(result, (text) => {
   if (!text) return
   const said = text.toLowerCase().trim()
-  if (state.voiceActive) {
+  if (voiceActive.value) {
     console.log('→ Phrase detected (debounced):', said)
     const found = [] as string[]
     for (const counter of counters.value) {
@@ -67,7 +66,7 @@ watchDebounced(result, (text) => {
   }
 }, { debounce: 1000 })
 
-const shouldBeListening = computed(() => state.voiceActive) // Now tied to state.voiceActive
+const shouldBeListening = computed(() => voiceActive) // Now tied to voiceActive
 
 // Auto-restart logic, only when voiceActive is true
 watch(isListening, (nowListening) => {
@@ -95,7 +94,7 @@ watch(error, (e) => {
   }
 })
 
-watch(() => state.voiceActive, (active) => {
+watch(() => voiceActive, (active) => {
   if (!isSupported.value) return
   if (active) {
     start()
@@ -104,7 +103,7 @@ watch(() => state.voiceActive, (active) => {
   }
 })
 
-watch(() => state.voiceActive, (active) => {
+watch(() => voiceActive, (active) => {
   if (!isSupported.value) return
   if (active && !isListening.value) { // Ensure recognition is not already active
     start()
@@ -112,6 +111,22 @@ watch(() => state.voiceActive, (active) => {
     stop()
   }
 })
+
+function toggleVoice() {
+  // Check if Speech Recognition is supported
+  if (!isSupported.value) {
+    toast.add({
+      title: 'Speech Recognition not supported',
+      description: 'Your browser does not support Speech Recognition. Please use a compatible browser like Chrome or Edge.',
+      icon: 'i-lucide-x',
+      color: 'error',
+      duration: 5000
+    })
+    return
+  }
+
+  voiceActive.value = !voiceActive.value
+}
 
 // Start on mount (or after user gesture)
 // onMounted(() => {
@@ -146,17 +161,19 @@ watch(() => state.voiceActive, (active) => {
         </template>
       </USelectMenu>
       <UButton
-        :color="state.voiceActive ? 'success' : 'error'"
+        :color="voiceActive ? 'success' : 'error'"
         class=" flex-0"
         icon="i-lucide-mic"
         variant="soft"
-        @click="state.voiceActive = !state.voiceActive"
+        size="xl"
+        @click="toggleVoice"
       />
       <UButton
         :color="editMode ? 'success' : 'error'"
         class=" flex-0"
         variant="soft"
         icon="i-lucide-cog"
+        size="xl"
         @click="editMode = !editMode"
       />
     </div>
