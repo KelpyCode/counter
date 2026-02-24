@@ -1,0 +1,103 @@
+<script setup lang="ts">
+import { deleteCounter, moveCounter, type Counter } from '~/lib/counter'
+
+interface Props {
+  categoryId: number
+  counter: Counter
+}
+
+const props = defineProps<Props>()
+const counter2 = computed(() => props.counter!)
+</script>
+
+<template>
+  <UCard
+
+    variant="soft"
+  >
+    <div class="flex flex-col items-center gap-4">
+      <div
+        class="flex flex-row gap-4 w-full"
+      >
+        <UButton
+          color="secondary"
+          icon="i-lucide-arrow-up"
+          size="xl"
+          @click="moveCounter(categoryId, counter2.id, 'up')"
+        />
+        <UButton
+          color="secondary"
+          icon="i-lucide-arrow-down"
+          size="xl"
+          @click="moveCounter(categoryId, counter2.id, 'down')"
+        />
+        <div class="flex-1" />
+        <UButton
+          color="error"
+          icon="i-lucide-trash-2"
+          size="xl"
+          @click="deleteCounter(categoryId, counter2.id)"
+        />
+      </div>
+
+      <div class="w-full">
+        <UInput
+          v-model="counter2.name"
+          placeholder="Counter Name"
+          class="w-full"
+          size="xl"
+        />
+      </div>
+      <div class="w-full">
+        <UInputNumber
+          v-model="counter2.value"
+          placeholder="Counter Value"
+          class="w-full"
+          size="xl"
+        />
+      </div>
+      <CCollapsible
+        label="Voice activation"
+        class="w-full"
+        :leading-icon="counter2.voice.enabled ? 'i-lucide-check' : 'i-lucide-x'"
+      >
+        <div
+          v-auto-animate
+          class="flex flex-col gap-4"
+        >
+          <UCheckbox
+            v-model="counter2.voice.enabled"
+            label="Enable voice activation"
+            size="xl"
+          />
+          <CArray
+            v-if="counter2.voice.enabled"
+            v-model="counter2.voice.commands"
+            :default="() => ({ add: 1, phrase: '' })"
+          >
+            <template #default="{ item }">
+              <div class="flex flex-col gap-4">
+                <UFormField label="Phrase">
+                  <UInput
+                    v-model="item.phrase"
+                    placeholder="hello world"
+                    class="w-full"
+                    size="xl"
+                  />
+                </UFormField>
+                <UFormField label="Increment by">
+                  <UInputNumber
+                    v-model="item.add"
+                    placeholder="1"
+                    class="w-full"
+                    size="xl"
+                  />
+                </UFormField>
+              </div>
+            </template>
+          </CArray>
+        </div>
+      </CCollapsible>
+    </div>
+  </UCard>
+</template>

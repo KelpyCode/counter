@@ -1,10 +1,12 @@
 export interface State {
   editMode: boolean
+  voiceActive: boolean
 }
 
 export function provideState() {
   const state = reactive<State>({
-    editMode: false
+    editMode: false,
+    voiceActive: false
   })
 
   provide('state', state)

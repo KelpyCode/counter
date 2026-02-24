@@ -31,7 +31,7 @@ useHead({
   }
 })
 
-const state = provideState()
+provideState()
 </script>
 
 <template>
@@ -39,12 +39,6 @@ const state = provideState()
     <div class="flex flex-row w-full">
       <div class="flex-1" />
       <div class="mr-2">
-        <UButton
-          :color="state.editMode ? 'primary' : 'neutral'"
-          class="mt-4 flex-0"
-          icon="i-lucide-cog"
-          @click="state.editMode = !state.editMode"
-        />
         <UColorModeButton />
       </div>
     </div>

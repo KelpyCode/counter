@@ -35,47 +35,29 @@ const categories = useCategories()
             size="xl"
           />
 
-          <UCollapsible class="flex flex-col gap-2">
-            <UButton
-              class="group"
-              label="Theming"
-              color="neutral"
-              variant="soft"
-              trailing-icon="i-lucide-chevron-down"
-              :ui="{
-                trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200'
-              }"
-              block
-            />
-
-            <template #content>
-              <div class="px-2">
-                <div class="px-4 py-2 bg-accented/15 flex flex-col gap-4">
-                  <UFormField label="Primary">
-                    <TailwindColorSelect
-                      v-model="category.theme.primary"
-                      @focus="applyTheme(category.theme)"
-                      @change="applyTheme(category.theme)"
-                    />
-                  </UFormField>
-                  <UFormField label="Secondary">
-                    <TailwindColorSelect
-                      v-model="category.theme.secondary"
-                      @focus="applyTheme(category.theme)"
-                      @change="applyTheme(category.theme)"
-                    />
-                  </UFormField>
-                  <UFormField label="Neutral">
-                    <TailwindColorSelect
-                      v-model="category.theme.neutral"
-                      @focus="applyTheme(category.theme)"
-                      @change="applyTheme(category.theme)"
-                    />
-                  </UFormField>
-                </div>
-              </div>
-            </template>
-          </UCollapsible>
+          <CCollapsible label="Theme">
+            <UFormField label="Primary">
+              <TailwindColorSelect
+                v-model="category.theme.primary"
+                @focus="applyTheme(category.theme)"
+                @change="applyTheme(category.theme)"
+              />
+            </UFormField>
+            <UFormField label="Secondary">
+              <TailwindColorSelect
+                v-model="category.theme.secondary"
+                @focus="applyTheme(category.theme)"
+                @change="applyTheme(category.theme)"
+              />
+            </UFormField>
+            <UFormField label="Neutral">
+              <TailwindColorSelect
+                v-model="category.theme.neutral"
+                @focus="applyTheme(category.theme)"
+                @change="applyTheme(category.theme)"
+              />
+            </UFormField>
+          </CCollapsible>
         </div>
 
         <div
